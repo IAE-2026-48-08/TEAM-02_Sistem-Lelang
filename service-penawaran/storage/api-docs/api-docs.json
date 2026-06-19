@@ -1,0 +1,112 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Penawaran Service API",
+        "description": "Dokumentasi API untuk Service Penawaran",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Local Docker Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/bids": {
+            "get": {
+                "summary": "Mengambil daftar penawaran",
+                "operationId": "14d97a5c0bcbbdd69621f09adf15a25d",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Menambah penawaran baru",
+                "operationId": "6d15862526939567f5dd5fe8e1db54d2",
+                "requestBody": {
+                    "description": "Data penawaran yang akan diajukan",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "item_id",
+                                    "bid_amount"
+                                ],
+                                "properties": {
+                                    "item_id": {
+                                        "description": "ID dari item yang ditawar",
+                                        "type": "string",
+                                        "example": "ITEM-DUMMY"
+                                    },
+                                    "bid_amount": {
+                                        "description": "Jumlah penawaran",
+                                        "type": "number",
+                                        "example": 50000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Penawaran berhasil diajukan."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/bids/{id}": {
+            "get": {
+                "summary": "Mengambil data penawaran spesifik",
+                "operationId": "920ab277fb2f08af87d87fefe5e3b180",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID Penawaran",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail penawaran."
+                    },
+                    "404": {
+                        "description": "Penawaran tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "name": "X-IAE-KEY",
+                "in": "header"
+            }
+        }
+    }
+}
