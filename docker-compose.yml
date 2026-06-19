@@ -1,0 +1,72 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: team02-gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - service-katalog
+      - service-penawaran
+      - service-winner
+    networks:
+      - team02-network
+
+  service-katalog:
+    build:
+      context: ./service-katalog
+    container_name: team02-katalog
+    environment:
+      - APP_NAME=KatalogService
+      - APP_ENV=local
+      - APP_KEY=base64:a2F0YWxvZy1rZXktMTAyMDIyNDAwMTkyLTMyYnl0ZXM=
+      - APP_DEBUG=true
+      - DB_CONNECTION=sqlite
+      - IAE_API_KEY=10202240192
+      - CENTRAL_SERVER_URL=https://iae-sso.virtualfri.id
+      - CENTRAL_TEAM_API_KEY=KEY-MHS-226
+    networks:
+      - team02-network
+
+  service-penawaran:
+    build:
+      context: ./service-penawaran
+    container_name: team02-penawaran
+    environment:
+      - APP_NAME=PenawaranService
+      - APP_ENV=local
+      - APP_KEY=base64:cGVuYXdhcmFuLWtleS0xMDIwMjI0MDAyMTItMzJieXQ=
+      - APP_DEBUG=true
+      - DB_CONNECTION=sqlite
+      - API_KEY=10202240212
+      - CENTRAL_SERVER_URL=https://iae-sso.virtualfri.id
+      - CENTRAL_TEAM_API_KEY=KEY-MHS-226
+      - SOAP_AUDIT_URL=https://iae-sso.virtualfri.id/soap/v1/audit
+      - RABBITMQ_HTTP_URL=https://iae-sso.virtualfri.id/api/v1/messages/publish
+      - RABBITMQ_EXCHANGE=iae.central.exchange
+    networks:
+      - team02-network
+
+  service-winner:
+    build:
+      context: ./service-winner
+    container_name: team02-winner
+    environment:
+      - APP_NAME=WinnerService
+      - APP_ENV=local
+      - APP_KEY=base64:d2lubmVya2V5LTEwMjAyMjQwMDA3Ni0zMmJ5dGVzMDA=
+      - APP_DEBUG=true
+      - DB_CONNECTION=sqlite
+      - IAE_KEY=iae-secret-key-102022400076
+      - CENTRAL_SERVER_URL=https://iae-sso.virtualfri.id
+      - CENTRAL_TEAM_API_KEY=KEY-MHS-226
+      - SOAP_AUDIT_URL=https://iae-sso.virtualfri.id/soap/v1/audit
+      - RABBITMQ_HTTP_URL=https://iae-sso.virtualfri.id/api/v1/messages/publish
+      - RABBITMQ_DRIVER=http
+    networks:
+      - team02-network
+
+networks:
+  team02-network:
+    driver: bridge
